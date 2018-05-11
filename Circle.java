@@ -11,12 +11,15 @@ import java.util.*;
 public class Circle {
 
     private int number;
+
     private double parentX;
     private double parentY;
     private double parentRadius;
+
     private double x;
     private double y;
     private double radius;
+
     private int r;
     private int g;
     private int b;
@@ -35,13 +38,8 @@ public class Circle {
         this.r = r;
         this.g = g;
         this.b = b;  
-/*
-        System.out.println("PARENT CIRCLLLEEEEE -----------" );
-        System.out.println("x: " + x + " y: " + y + " rad: " + radius);  
-        System.out.println("r: " + r + " g: " + g + " b: " + b);  
-        */
-    
     }
+    
     /**
      * Constructor for other generations
      */
@@ -55,11 +53,11 @@ public class Circle {
         this.r = r;
         this.g = g;
         this.b = b;  
-       /* System.out.println("Circle number: " + number + " ------------" );
-        System.out.println("parenx: " + parentX + " px: " + pX + " py: " + parentY + " rad: " + radius);  
-        System.out.println("r: " + r + " g: " + g + " b: " + b);  */
     }
 
+    /**
+     * Sets each position depending on circle ID!
+     */
     public void setSelfFields() {
         double k = 1.73;
         if (number == 1) {
@@ -86,23 +84,33 @@ public class Circle {
         } 
     }
 
+    /**
+     * Draws the circle on screen.
+     */
     public void draw(Graphics page){
         Color colour = new Color(r, g, b);
         page.setColor(colour);
         int rInt = (int) radius;
-        // centre x = corner x + r
-        // centre y = corner y + r
         page.fillOval(((int) x - rInt), ((int) y - rInt), (2 * rInt), (2 * rInt));
     }
 
+    /**
+     * return the x value.
+     */
     public double getx() {
         return x;
     }
 
+    /**
+     * return the y value.
+     */
     public double gety() {
         return y;
     }
 
+    /** 
+     * return the radius.
+     */
     public double getRadius() {
         return radius;
     }

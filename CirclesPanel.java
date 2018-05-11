@@ -35,11 +35,11 @@ public class CirclesPanel extends JPanel {
         this.radius = 350.0;
         thisIt = 0;
 
-        radii = new double[iterations];
-        colours = new int[iterations][3];
+        radii = new double[iterations+1];
+        colours = new int[iterations+1][3];
 
         if (!usingFile) {
-            for (int i = 0; i < iterations; i++) {
+            for (int i = 0; i < iterations+1; i++) {
                 if (i == 0) {
                     radii[i] = 1.0;
                     colours[i][0] = 255;
@@ -56,8 +56,8 @@ public class CirclesPanel extends JPanel {
                     colours[i][1] = g;
                     colours[i][2] = b;
                 }
-                
             }
+            
         }
 
         setPreferredSize(new Dimension((((int) x) * 2), (((int) y)) * 2));
@@ -98,35 +98,111 @@ public class CirclesPanel extends JPanel {
 
     }
     
+    /**
+     * Paint component to draw on the circles.
+     * As well as call the recursive draw method below.
+     * Has different tasks dependant on if using file or not.
+     */
     public void paintComponent(Graphics page) {
         super.paintComponent(page);
         thisIt = 0;
-        
-        Circle first = new Circle(x, y, radius, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
-        first.draw(page);
-        thisIt++;
-        int i = 1;
-        while (i < 8) {
-            Circle c = new Circle(i, x, y, radius, ratio, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
-            recursiveDraw(c, thisIt, page, ratio);
-            i++;
+
+
+        int width = getWidth();
+        int height = getHeight();
+
+        if (width < height) {
+            double newR = ((double) width / 2.0);
+            this.x = newR;
+            this.y = newR;
+            this.radius = newR;
+        } else {
+            double newR = ((double) height / 2.0);
+            this.x = newR;
+            this.y = newR;
+            this.radius = newR;
+        }
+
+        if (!usingFile) {
+            // Not using the file, have more room for random colours and fun.
+            Random rand = new Random(); 
+            int r = rand.nextInt(256);
+            int g = rand.nextInt(256);
+            int b = rand.nextInt(256);
+
+            Circle first = new Circle(x, y, radius, r, g, b);
+            first.draw(page);
+            if (iterations == 0) {
+                return;
+            }
+            thisIt++;
+            int i = 1;
+            r = rand.nextInt(256);
+            g = rand.nextInt(256);
+            b = rand.nextInt(256);
+            while (i < 8) {
+                Circle c = new Circle(i, x, y, radius, ratio, r, g, b);
+                if (iterations == 1) {
+                    c.draw(page);
+                } else {
+                    recursiveDraw(c, thisIt, page, ratio);
+                }
+                i++;
+            }
+        } else {
+            // Using the set colours as specified in the file.
+            Circle first = new Circle(x, y, radius, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
+            first.draw(page);
+            if (iterations == 0) {
+                return;
+            }
+            thisIt++;
+            int i = 1;
+            while (i < 8) {
+                Circle c = new Circle(i, x, y, radius, ratio, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
+                if (iterations == 1) {
+                    c.draw(page);
+                } else {
+                    recursiveDraw(c, thisIt, page, ratio);
+                }
+                i++;
+            }
         }
         
     }
 
+    /**
+     * Recursive draw method draws seven circles based on coordinates of input circle.
+     */
     public void recursiveDraw(Circle cIn, int thisItt, Graphics page, double ra) {
-        cIn.draw(page);
-        thisItt++;
+        
         if (thisItt == iterations) {
             return;
         }
-        int i = 1;
-        while (i < 8) {
-            Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), ra, colours[thisItt][0], colours[thisItt][1], colours[thisItt][2]);
-            c.draw(page);
-            recursiveDraw(c, thisItt, page, ra);
-            i++;
+        cIn.draw(page);
+        Random rand = new Random();
+        
+        thisItt++;
+        int i = 1; 
+        if (!usingFile) {
+            int r = rand.nextInt(256);
+            int g = rand.nextInt(256);
+            int b = rand.nextInt(256);
+            while (i < 8) {
+                Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), 
+                    ra, r, g, b);
+                recursiveDraw(c, thisItt, page, ra);
+                i++;
+            }
+        } else {
+            while (i < 8) {
+                Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), 
+                    ra, colours[thisItt][0], colours[thisItt][1], colours[thisItt][2]);
+                recursiveDraw(c, thisItt, page, ra);
+                i++;
+            }
         }
+        
     }
 
 }
