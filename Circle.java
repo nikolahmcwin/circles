@@ -92,6 +92,7 @@ public class Circle {
         page.setColor(colour);
         int rInt = (int) radius;
         page.fillOval(((int) x - rInt), ((int) y - rInt), (2 * rInt), (2 * rInt));
+        //page.drawOval(((int) x - rInt), ((int) y - rInt), (2 * rInt), (2 * rInt));
     }
 
     /**

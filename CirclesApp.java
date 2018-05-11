@@ -43,7 +43,43 @@ public class CirclesApp {
             usingFile = false;
             sc = new Scanner(System.in);
             System.out.println("Please enter the number of iterations! Between 0-9");
-            iterations = sc.nextInt();        
+            try { 
+                iterations = sc.nextInt(); 
+            } catch (InputMismatchException e) {
+                System.out.println("You must enter an integer. Start again.");
+                System.exit(0);
+            }
+            System.out.println("Would you also like to enter a radius ration? y/n");
+            if (sc.hasNext()) {
+                String yn = sc.next();
+                //System.out.println("You entered: " + yn + " and length is: " + yn.length());
+                if (yn.equals("y")) {
+                    System.out.println("Please enter a ratio. Less than 1/3 works best.");
+                    
+                    String strRadius;
+                    if (sc.hasNext()) {
+                        strRadius = sc.next();
+                    
+                        int slash = strRadius.indexOf('/');
+                        if (slash != -1) {
+                            // We have a ratio, set this up
+                            int a = Integer.parseInt(strRadius.substring(0, slash));
+                            int b = Integer.parseInt(strRadius.substring(slash+1));
+                            radius = ((double) a / (double) b);
+                        } else {
+                            // We have a straight float
+                            radius = Double.parseDouble(strRadius);
+                        }
+                    }
+                } else if (yn.equals("n")) {
+                    radius = (1.0 / 3.0);
+                } else {
+                    System.out.println("Incorrect response. You must enter either 'y' or 'n'. Start again");
+                    System.exit(0);
+                }
+                
+            }
+            
         }
 
         startGUI(iterations, radius, usingFile, data);
