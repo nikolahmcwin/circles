@@ -42,20 +42,24 @@ public class CirclesPanel extends JPanel {
             for (int i = 0; i < iterations; i++) {
                 if (i == 0) {
                     radii[i] = 1.0;
+                    colours[i][0] = 255;
+                    colours[i][1] = 0;
+                    colours[i][2] = 0;
                 } else {
                     radii[i] = (1.0/3.0);
-                }
-                Random rand = new Random(); 
-                int r = rand.nextInt(256);
-                int g = rand.nextInt(256);
-                int b = rand.nextInt(256);
+                    Random rand = new Random(); 
+                    int r = rand.nextInt(256);
+                    int g = rand.nextInt(256);
+                    int b = rand.nextInt(256);
 
-                colours[i][0] = r;
-                colours[i][1] = g;
-                colours[i][2] = b;
+                    colours[i][0] = r;
+                    colours[i][1] = g;
+                    colours[i][2] = b;
+                }
+                
             }
         }
-       
+
         setPreferredSize(new Dimension((((int) x) * 2), (((int) y)) * 2));
         setBackground(Color.white);
     }
@@ -69,6 +73,7 @@ public class CirclesPanel extends JPanel {
        
         for (int i = 0; i < data.size(); i++) {
             String line = data.get(i);
+            
             String[] list = line.split(" ");
                 
             String strRadius = list[0];
@@ -77,71 +82,51 @@ public class CirclesPanel extends JPanel {
                 // We have a ratio, set this up
                 int a = Integer.parseInt(strRadius.substring(0, slash));
                 int b = Integer.parseInt(strRadius.substring(slash+1));
-                radius = (a / b);
+                ratio = ((double) a / (double) b);
             } else {
-                radius = Double.parseDouble(strRadius);
+                ratio = Double.parseDouble(strRadius);
             }
-            radii[i] = radius;
-
+            radii[i] = ratio;
             int r = Integer.parseInt(list[1]);
             int g = Integer.parseInt(list[2]);
             int b = Integer.parseInt(list[3]);
 
             colours[i][0] = r;
             colours[i][1] = g;
-            colours[i][2] = b;
+            colours[i][2] = b;        
         }
-        //System.out.println("input File = " + usingFile);
+
     }
     
     public void paintComponent(Graphics page) {
         super.paintComponent(page);
-        Random rand = new Random(); 
-        if (usingFile) {
-            
-        } else {
-            int r = rand.nextInt(256);
-            int g = rand.nextInt(256);
-            int b = rand.nextInt(256);
-
-            Circle first = new Circle(x, y, radius, r, g, b);
-            first.draw(page);
-
-            //double ra = (1.0/3.0);
-            int i = 1;
-            r = rand.nextInt(256);
-            g = rand.nextInt(256);
-            b = rand.nextInt(256);
-            while (i < 8) {
-                Circle c = new Circle(i, x, y, radius, ratio, r, g, b);
-                //c.draw(page);
-                recursiveDraw(c, 1, page, ratio);
-                i++;
-            }
+        thisIt = 0;
         
-        }
-        
-
-
-    }
-
-    public void recursiveDraw(Circle cIn, int thisIt, Graphics page, double ra) {
-        if (thisIt == iterations) {
-            return;
-        }
+        Circle first = new Circle(x, y, radius, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
+        first.draw(page);
         thisIt++;
-        cIn.draw(page);
-        Random rand = new Random(); 
         int i = 1;
-        int r = rand.nextInt(256);
-        int g = rand.nextInt(256);
-        int b = rand.nextInt(256);
         while (i < 8) {
-            Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), ra, r, g, b);
-            //c.draw(page);
-            recursiveDraw(c, thisIt, page, ra);
+            Circle c = new Circle(i, x, y, radius, ratio, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
+            recursiveDraw(c, thisIt, page, ratio);
             i++;
         }
         
     }
+
+    public void recursiveDraw(Circle cIn, int thisItt, Graphics page, double ra) {
+        cIn.draw(page);
+        thisItt++;
+        if (thisItt == iterations) {
+            return;
+        }
+        int i = 1;
+        while (i < 8) {
+            Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), ra, colours[thisItt][0], colours[thisItt][1], colours[thisItt][2]);
+            c.draw(page);
+            recursiveDraw(c, thisItt, page, ra);
+            i++;
+        }
+    }
+
 }
