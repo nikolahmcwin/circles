@@ -70,13 +70,13 @@ public class CirclesPanel extends JPanel {
      */
     public CirclesPanel(int iterations, boolean usingFile, ArrayList<String> data) {
         this(iterations, 0.0, usingFile);
-       
         for (int i = 0; i < data.size(); i++) {
             String line = data.get(i);
             
             String[] list = line.split(" ");
                 
             String strRadius = list[0];
+
             int slash = strRadius.indexOf('/');
             if (slash != -1) {
                 // We have a ratio, set this up
@@ -86,11 +86,29 @@ public class CirclesPanel extends JPanel {
             } else {
                 ratio = Double.parseDouble(strRadius);
             }
+
             radii[i] = ratio;
+
             int r = Integer.parseInt(list[1]);
             int g = Integer.parseInt(list[2]);
             int b = Integer.parseInt(list[3]);
 
+            try { 
+                r = Integer.parseInt(list[1]);
+                g = Integer.parseInt(list[2]);
+                b = Integer.parseInt(list[3]);   
+            } catch (InputMismatchException e) {
+                System.out.println("Your colours aren't correct integers! Start again.");
+                System.exit(0);
+            }
+            
+            if ((r > 256) || (g > 256) || (b > 256)) {
+                System.out.println("Integers for colours are out of range. Start again.");
+                System.exit(0);
+            } else if ((r < 0) || (g < 0) || (b < 0)) {
+                System.out.println("Integers for colours are out of range. Start again.");
+                System.exit(0);
+            }
             colours[i][0] = r;
             colours[i][1] = g;
             colours[i][2] = b;        
@@ -106,7 +124,6 @@ public class CirclesPanel extends JPanel {
     public void paintComponent(Graphics page) {
         super.paintComponent(page);
         thisIt = 0;
-
 
         int width = getWidth();
         int height = getHeight();
@@ -132,6 +149,7 @@ public class CirclesPanel extends JPanel {
 
             Circle first = new Circle(x, y, radius, r, g, b);
             first.draw(page);
+            
             if (iterations == 0) {
                 return;
             }
@@ -151,6 +169,7 @@ public class CirclesPanel extends JPanel {
             }
         } else {
             // Using the set colours as specified in the file.
+            thisIt = 0;
             Circle first = new Circle(x, y, radius, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
             first.draw(page);
             if (iterations == 0) {
@@ -159,11 +178,11 @@ public class CirclesPanel extends JPanel {
             thisIt++;
             int i = 1;
             while (i < 8) {
-                Circle c = new Circle(i, x, y, radius, ratio, colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
+                Circle c = new Circle(i, x, y, radius, radii[thisIt], colours[thisIt][0], colours[thisIt][1], colours[thisIt][2]);
                 if (iterations == 1) {
                     c.draw(page);
                 } else {
-                    recursiveDraw(c, thisIt, page, ratio);
+                    recursiveDraw(c, thisIt, page, radii[thisIt]);
                 }
                 i++;
             }
@@ -175,13 +194,12 @@ public class CirclesPanel extends JPanel {
      * Recursive draw method draws seven circles based on coordinates of input circle.
      */
     public void recursiveDraw(Circle cIn, int thisItt, Graphics page, double ra) {
-        
+        cIn.draw(page);
         if (thisItt == iterations) {
             return;
         }
-        cIn.draw(page);
-        Random rand = new Random();
         
+        Random rand = new Random();
         thisItt++;
         int i = 1; 
         if (!usingFile) {
@@ -197,7 +215,7 @@ public class CirclesPanel extends JPanel {
         } else {
             while (i < 8) {
                 Circle c = new Circle(i, cIn.getx(), cIn.gety(), cIn.getRadius(), 
-                    ra, colours[thisItt][0], colours[thisItt][1], colours[thisItt][2]);
+                    radii[thisItt], colours[thisItt][0], colours[thisItt][1], colours[thisItt][2]);
                 recursiveDraw(c, thisItt, page, ra);
                 i++;
             }

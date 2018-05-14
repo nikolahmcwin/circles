@@ -34,8 +34,10 @@ public class CirclesApp {
                     line = sc.nextLine();
                     data.add(line);
                 }
+                iterations--;
             } catch (IOException e) {
-                System.out.println("Please check your file name.");
+                System.out.println("Please check your file name is correct. Start again");
+                System.exit(0);
             }
 
         } else {
@@ -45,6 +47,13 @@ public class CirclesApp {
             System.out.println("Please enter the number of iterations! Between 0-9");
             try { 
                 iterations = sc.nextInt(); 
+                if (iterations > 9) {
+                    System.out.println("You must enter a number less than 10. Start again.");
+                    System.exit(0);
+                } else if (iterations < 0) {
+                    System.out.println("You must enter a positive integer. Start again.");
+                    System.exit(0);
+                }           
             } catch (InputMismatchException e) {
                 System.out.println("You must enter an integer. Start again.");
                 System.exit(0);
